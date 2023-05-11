@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$remote_addr"
+    nginx.ingress.kubernetes.io/upstream-hash-by-subset: $request_uri
+    # nginx.ingress.kubernetes.io/upstream-hash-by-subset-size: "3"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+
+    # nginx.org/websocket-services: nginxhello
+  name: nginxhello-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: websocketpoc.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: websocket-service
+              port:
+                number: 8080
